@@ -162,7 +162,7 @@ receipt-processor/
 ├── app/
 │   ├── main.py                   # Entry point for FastAPI application.
 |   ├── controllers/
-│   │   └── receipt_controller.py  
+│   │   └── receipt_controller.py  # Defines the API endpoints for processing receipts and retrieving points.
 │   ├── models/
 │   │   └── receipt.py             # Data models for Receipt and Item, defined with Pydantic for data validation.
 │   ├── services/
@@ -182,14 +182,16 @@ receipt-processor/
 ### Explanation of Folder Structure
 
 1. **app/main.py**: The main entry point that initializes the FastAPI application and sets up routes.
+
+2. **app/controllers**: Contains receipt_controller.py, which defines the API endpoints. This file handles HTTP requests for processing receipts and retrieving points based on receipt ID. By separating controller logic, we make it easy to update or add routes without impacting other parts of the application.
   
-2. **app/models**: Contains the data models for `Receipt` and `Item`. Pydantic is used to enforce data structure and validate incoming request data.
+3. **app/models**: Contains the data models for `Receipt` and `Item`. Pydantic is used to enforce data structure and validate incoming request data.
 
-3. **app/services**: Houses the `receipt_service.py`, which contains the core logic for calculating points. This separation allows business logic to remain modular, testable, and reusable.
+4. **app/services**: Houses the `receipt_service.py`, which contains the core logic for calculating points. This separation allows business logic to remain modular, testable, and reusable.
 
-4. **app/utils**: Contains helper utilities like `id_generator.py` for generating unique IDs. Isolating utilities makes the codebase cleaner and more organized.
+5. **app/utils**: Contains helper utilities like `id_generator.py` for generating unique IDs. Isolating utilities makes the codebase cleaner and more organized.
 
-5. **tests/**: The `tests` folder is split into `test_receipt_controller.py` and `test_receipt_service.py` for clear separation between endpoint testing and business logic testing. This ensures that each component can be individually verified.
+6. **tests/**: The `tests` folder is split into `test_receipt_controller.py` and `test_receipt_service.py` for clear separation between endpoint testing and business logic testing. This ensures that each component can be individually verified.
 
 ## Additional Notes
 
