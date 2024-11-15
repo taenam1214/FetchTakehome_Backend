@@ -1,4 +1,5 @@
 import pytest
+
 from app.services.receipt_service import (
     calculate_points,
     points_for_retailer_name,
@@ -54,3 +55,49 @@ def test_odd_day_points(sample_receipt):
 def test_purchase_time_bonus(sample_receipt):
     sample_receipt.purchaseTime = "14:30"
     assert points_for_purchase_time(sample_receipt.purchaseTime) == 10
+
+def test_retailer_name_empty():
+    points = points_for_retailer_name("")
+    assert points == 0  # No alphanumeric characters
+
+def test_retailer_name_special_characters():
+    points = points_for_retailer_name("!!!@@@###")
+    assert points == 0  # Special characters only, no alphanumeric
+
+def test_total_exact_multiple_of_quarter():
+    total_points = points_for_total_amount("9.25")
+    assert total_points == 25  # Total is a multiple of 0.25
+
+def test_total_round_dollar_and_multiple_of_quarter():
+    total_points = points_for_total_amount("25.00")
+    assert total_points == 50  # Only round dollar should apply, not both
+
+def test_item_pairs_with_odd_number():
+    items = [
+        Item(shortDescription="Apple", price="1.00"),
+        Item(shortDescription="Banana", price="1.00"),
+        Item(shortDescription="Orange", price="1.00")
+    ]
+    points = points_for_item_pairs(items)
+    assert points == 5  # Only one pair gives points
+
+def test_item_description_points_multiple_of_three():
+    items = [
+        Item(shortDescription="Item12345678901", price="5.00")  # 15 characters (multiple of 3)
+    ]
+    points = points_for_item_description(items)
+    assert points == 1, f"Expected 1 point, but got {points}"  # 5.00 * 0.2 = 1 point
+
+def test_odd_day_points_even_day():
+    points = points_for_odd_day("2023-12-02")  # Even day
+    assert points == 0  # No points for even day
+
+def test_purchase_time_out_of_range():
+    points = points_for_purchase_time("10:00")
+    assert points == 0  # No points for out-of-range time
+
+def test_purchase_time_edge_cases():
+    assert points_for_purchase_time("14:00") == 10  # Exactly 2:00 pm
+    assert points_for_purchase_time("15:59") == 10  # Exactly 3:59 pm
+    assert points_for_purchase_time("13:59") == 0   # One minute before 2:00 pm
+    assert points_for_purchase_time("16:00") == 0   # Exactly 4:00 pm

@@ -62,7 +62,7 @@ def calculate_points(receipt: Receipt) -> int:
     points += (len(receipt.items) // 2) * 5
 
     # Rule 5: If the trimmed length of the item description is a multiple of 3,
-    # multiply the price by 0.2 and round up to the nearest integer.
+    # multiply the price by 0.2 and round up to the nearest integer
     for item in receipt.items:
         description_length = len(item.shortDescription.strip())
         if description_length % 3 == 0:
